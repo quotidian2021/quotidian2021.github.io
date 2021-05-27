@@ -1,759 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
 
+<html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
 <head>
-    <title>Quotidian</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap5.min.js"></script>
-    <script src="js/datatable_bs5.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Rajendran Dandapani</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, target-densityDpi=device-dpi">
+    <meta property="description" content="">
+    <meta property="mobile-web-app-capable" content="yes">
+    <meta property="apple-mobile-web-app-capable" content="yes">
+    <meta property="apple-mobile-web-app-status-bar-style" content="black">
+    <meta property="author" content="">
+    <link href="./src/css" rel="stylesheet" type="text/css">
+    <link href="./src/font-awesome.css" rel="stylesheet">
+    <link href="./src/tailwind.min.css" rel="stylesheet">
+    <link href="./src/style.css" rel="stylesheet">
+    <link href="./src/all.min.css" rel="stylesheet">
+    <link href="./src/css2" rel="stylesheet">
+    <script src="./src/list.min.js.download"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+            var options = {valueNames: ['title', 'keywords']};
+            var comics = new List('comics', options);
+
+            function customSearch(searchString, columns) {
+
+
+                var words = [],
+                    phrase,
+                    ss = searchString;
+                while ((phrase = ss.match(/"([^"]+)"/)) !== null) {
+                    words.push(phrase[1])
+                    ss = ss.substring(0, phrase.index) + ss.substring(phrase.index + phrase[0].length)
+                }
+
+                ss = ss.trim()
+                if (ss.length) words = words.concat(ss.split(/\s+/))
+                for (var k = 0, kl = comics.items.length; k < kl; k++) {
+                    var item = comics.items[k]
+                    item.found = false
+                    if (!words.length) continue
+                    for (var i = 0, il = words.length; i < il; i++) {
+                        var word_found = false
+                        for (var j = 0, jl = columns.length; j < jl; j++) {
+                            var values = item.values(),
+                                column = columns[j]
+                            if (values.hasOwnProperty(column) && values[column] !== undefined && values[column] !== null) {
+                                var text = typeof values[column] !== 'string' ? values[column].toString() : values[column]
+                                text = text.replace(/[^\w\s\'\"]/gi, ' ')
+                                var index = text.toLowerCase().indexOf(words[i]);
+                                if (index != -1 && (index == 0 || text[index - 1] == " ")) {
+
+                                    word_found = true
+                                    break
+                                }
+                            }
+                        }
+
+                        if (!word_found) break
+                    }
+                    item.found = word_found
+                }
+            }
+
+            document.querySelector('#search').addEventListener('keyup', function () {
+                var searchString = this.value;
+                console.log(this);
+                comics.search(searchString, customSearch);
+            });
+        });
+
+    </script>
 </head>
 
-<body>
 
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Quotidian</a></li>
-            <li><a href="#">Wait...Watch >>></a></li>
-        </ul>
+<body class="vsc-initialized">
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a
+        href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install
+    Google Chrome</a> to experience this site.</p><![endif]-->
+
+
+<span id="top"></span>
+<span id="content"></span>
+
+
+<section id="welcome">
+    <div class="container text-center mx-auto px-8 md:w-4/5 lg:w-3/5 xl:w-2/3 p-6">
+        <h1 class="text-3xl lg:text-4xl font-bold"><a href="https://www.youtube.com/c/rajendrandandapani">Rajendran Dandapani</a></h1>
+        <p class="pb-4">
+            youtube playlists
+        </p>
+
+        <div class="flex">
+            <div class="m-auto">
+                <input placeholder="🔎 Search" type="search" id="search"
+                       class="border-black border-2 rounded-lg p-1 pl-2 ml-2">
+            </div>
+        </div>
     </div>
-</nav>
+</section>
+<section class="pb-8   comic" id="comics">
+    <div class="container mx-auto px-8 md:w-4/5 lg:w-3/5 xl:w-2/3 p-6">
+        <div class="grid xl:grid-cols-4 md:grid-cols-3 grid-cols-2 comic-pages list">
+                <a href="1.html">
+                    <figure class="p-4 m-4">
+                        <figcaption class="flex">
+                            <span class="m-auto block title text-sm md:text-base">Quotidians - by Rajendran Dandapani</span>
+                        </figcaption>
+                    </figure>
+                    <div class="hidden keywords"></div>
+                </a>
 
-<div class="container">
-    <table id="example" class="table table-striped table-bordered" style="width:100%">
-        <thead>
-        <tr>
-            <th>Watch</th>
-            <th>title</th>
-            <th>description</th>
-            <th>shared on</th>
-
-        </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=_1HeyEUvaak">120</a></td>
-                <td>Q And A For 111 To 119</td>
-                <td>You had many questions. I, hopefully, have some answers!</td>
-                <td>2021-04-30</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=0VpVumacu-Y">119</a></td>
-                <td>Responsible Adult!</td>
-                <td>Parenting Tips From A Giraffe, A Bird, And 300 Spartans!</td>
-                <td>2021-04-29</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=otWwXxvky6M">118</a></td>
-                <td>WYSIWYG?</td>
-                <td>WYSIWYG! - So, I Hope You See What I Mean!</td>
-                <td>2021-04-27</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=TpSPK6LntdY">117</a></td>
-                <td>Being haPPPy!</td>
-                <td>Learn The New Spelling For This Important Word: haPPPy!</td>
-                <td>2021-04-26</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=8EHWg3D6qW8">116</a></td>
-                <td>Fear Is The Key!</td>
-                <td>What Are You Afraid Of? Fear Fear Not!</td>
-                <td>2021-04-25</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=nHZ1ichmjO0">115</a></td>
-                <td>Right In Front!</td>
-                <td>We Aren't Blinded By Darkness. It Is Too Much Brightness That Blinds Us!</td>
-                <td>2021-04-25</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=W-FSJCNe4ME">114</a></td>
-                <td>Out Of The Box?</td>
-                <td>Where Is The Box You Want To Think OUT Of?</td>
-                <td>2021-04-23</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=31S8LeuPBvs">113</a></td>
-                <td>Team Evolution</td>
-                <td>How Do People Come Together To Perform?</td>
-                <td>2021-04-22</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=ttTd01zLGOg">112</a></td>
-                <td>Handle With Care!</td>
-                <td>Ideas Are Fragile! Handle With Care!</td>
-                <td>2021-04-21</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=nzS_l1ZNBoI">111</a></td>
-                <td>Quality From Quantity?!</td>
-                <td>Quantity Or Quality. The Eternal Dilemma!</td>
-                <td>2021-04-20</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=n8O3OhJmprQ">110</a></td>
-                <td>Q And A for 101 to 109</td>
-                <td>You had many questions. I, hopefully, have some answers!</td>
-                <td>2021-04-19</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=OGt_TaiANWY">109</a></td>
-                <td>Bothersome Benchmarks!</td>
-                <td></td>
-                <td>2021-04-19</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=qT1AVEahck4">108</a></td>
-                <td>Short And Sweet!</td>
-                <td>Short And Sweet Makes It Really Neat!</td>
-                <td>2021-04-17</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=mXrcxN3q8S0">107</a></td>
-                <td>Walk In Their Shoes?!</td>
-                <td>Walk A Mile In Your Customer�s Shoes?</td>
-                <td>2021-04-16</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=ioNZ3tH7lII">106</a></td>
-                <td>The Problem With Maps!</td>
-                <td>Don�t Give Them Maps Please!</td>
-                <td>2021-04-15</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=6J7LDONLmRw">105</a></td>
-                <td>Lead With These Four!</td>
-                <td>Four Arts That Make A Great Leader!</td>
-                <td>2021-04-14</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=JYyhIDoVLXc">104</a></td>
-                <td>Predictive Helpfulness?</td>
-                <td>Help Before Being Asked?</td>
-                <td>2021-04-13</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=Tc08bIy0ars">103</a></td>
-                <td>Competing Against?</td>
-                <td>Who Are You Competing With? Three To Choose From!</td>
-                <td>2021-04-12</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=LrSt1cc4VgA">102</a></td>
-                <td>Pass On, But How?!</td>
-                <td>How To Die? When You Can�t Say When To Die!</td>
-                <td>2021-04-11</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=OzbxNji_ugM">101</a></td>
-                <td>Unbroken Streak!</td>
-                <td>From 1 to 100. And, How Much Longer?</td>
-                <td>2021-04-10</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=n07bFqapuU0">100</a></td>
-                <td>Q And A for 091 to 099</td>
-                <td>You had many questions. I, hopefully, have some answers!</td>
-                <td>2021-04-09</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=3diF4cFD8y4">099</a></td>
-                <td>One More Time!</td>
-                <td>Practice! Deliberate Practice!</td>
-                <td>2021-04-08</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=eqnKYDp4f8k">098</a></td>
-                <td>Willpower Will Power?!</td>
-                <td>The Irresistible Urge To Splurge!</td>
-                <td>2021-04-07</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=hTOdGz_m7Tw">097</a></td>
-                <td>The Art Of Feedback!</td>
-                <td>How The Bleep Do We Give Feedback?</td>
-                <td>2021-04-07</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=qe7clJWDuCE">096</a></td>
-                <td>Sleeping Dogs!</td>
-                <td>What Should We Do With Sleeping Dogs?</td>
-                <td>2021-04-05</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=1VPVYERL8Co">095</a></td>
-                <td>Is It A Pyramid?!</td>
-                <td>Does It Really Look Like A Pyramid?</td>
-                <td>2021-04-04</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=xlHtssauI4E">094</a></td>
-                <td>Connecting The Dots!</td>
-                <td>How Does One Connect The Dots?</td>
-                <td>2021-04-03</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=mVmCTK24d-U">093</a></td>
-                <td>Buzz Kill!</td>
-                <td>What Is The Most Important Job Of Anybody In Power?</td>
-                <td>2021-04-02</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=7C-vF36_y9U">092</a></td>
-                <td>The Indispensables!</td>
-                <td>How Important Is It To Be "Important"?</td>
-                <td>2021-04-01</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=EH7uDjkN_hM">091</a></td>
-                <td>The Work You Do!</td>
-                <td>There Is Dignity In Every Labour! It Is The Way You Approach It That Matters!</td>
-                <td>2021-03-31</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=OBwZNefJAz0">090</a></td>
-                <td>Q And A for 081 to 089</td>
-                <td>You had many questions. I, hopefully, have some answers!</td>
-                <td>2021-03-30</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=SS-Eoh8R7ZU">089</a></td>
-                <td>This Or That?!</td>
-                <td>Can More Choice Lead To Less Delight?</td>
-                <td>2021-03-29</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=49KXYhK7r1w">088</a></td>
-                <td>Lower If Increased?!</td>
-                <td>Can Things Decrease In Quality When Increased In Quantity?</td>
-                <td>2021-03-28</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=6-eJPbiBoXk">087</a></td>
-                <td>What-trinsic Are You?</td>
-                <td>What-trinsic Are You? Intrinsic or Extrinsic?</td>
-                <td>2021-03-27</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=AaJpRFjot1c">086</a></td>
-                <td>The Brain's Gearbox!</td>
-                <td>The Brain�s Gearbox Has Multiple Speeds!</td>
-                <td>2021-03-27</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=8QKO2aROW5Q">085</a></td>
-                <td>Rush Not!</td>
-                <td>How About We Just Slow Things Down...?</td>
-                <td>2021-03-25</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=m6ssfihB1Gs">084</a></td>
-                <td>Thirty Seven Is Special!</td>
-                <td>Why Is Thirty Seven So Special?</td>
-                <td>2021-03-24</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=L5ZZK5VZAEA">083</a></td>
-                <td>So Near, Oh Dear!</td>
-                <td>You�ll Remember The Recently Quite Decently!</td>
-                <td>2021-03-23</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=Nx2QwSERTQQ">082</a></td>
-                <td>Why? Why not!</td>
-                <td>The Importance Of Asking Why Not!</td>
-                <td>2021-03-22</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=BrBoVtZ4NRo">081</a></td>
-                <td>Detective Work!</td>
-                <td>First Impressions Leave Lasting Impact!</td>
-                <td>2021-03-21</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=c40-8tGTZI8">080</a></td>
-                <td>Q And A for 071 to 079</td>
-                <td>You had many questions. I, hopefully, have some answers!</td>
-                <td>2021-03-20</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=12OhHutxKaw">079</a></td>
-                <td>Eighty! Twenty!!</td>
-                <td>Not All Ways To Make A Hundred Are The Same!</td>
-                <td>2021-03-19</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=P_-K-VzTp60">078</a></td>
-                <td>Are(n't) You Failing?</td>
-                <td>Are(n�t) You Failing Enough?</td>
-                <td>2021-03-18</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=F9FALeTszvw">077</a></td>
-                <td>Fail Fast!</td>
-                <td>Fail Fast, Learn Soon, Succeed Faster!</td>
-                <td>2021-03-17</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=AIAQd1QQN7g">076</a></td>
-                <td>Bicycle Brilliance</td>
-                <td>Respect The Humble Bicycle!</td>
-                <td>2021-03-17</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=yglb6hzcRjw">075</a></td>
-                <td>Learning In Quarters</td>
-                <td>Four Quarters Make For Wholesome Learning!</td>
-                <td>2021-03-17</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=1Pt-j03lE-Y">074</a></td>
-                <td>Disagree Please!</td>
-                <td>Why Constructive Disagreement Is Good Once In A While!</td>
-                <td>2021-03-14</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=GVFbUkpQBVo">073</a></td>
-                <td>First Follower!</td>
-                <td>Who Is More Important? The Leader Or The First Follower? Let Us Find Out!</td>
-                <td>2021-03-13</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=CBstwjm7f4k">072</a></td>
-                <td>Dog Food Is Best!</td>
-                <td>Dog Food Is The Best Food To Raise Your Customer Satisfaction Pedigree!</td>
-                <td>2021-03-12</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=PVMr8sYL3BQ">071</a></td>
-                <td>Potion For Persuasion!</td>
-                <td>Want A Magic Potion For Universal Persuasion?</td>
-                <td>2021-03-11</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=u3tYUMxFYu8">070</a></td>
-                <td>Q and A for 061 to 069</td>
-                <td>You had many questions. I, hopefully, have some answers!</td>
-                <td>2021-03-10</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=wTeKT58GAaA">069</a></td>
-                <td>Study Hard??</td>
-                <td>An Ancient Nugget Of Wisdom I Tend To Disagree With!</td>
-                <td>2021-03-09</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=kgoTPmSTey4">068</a></td>
-                <td>Just Beyond Reach!</td>
-                <td>When Learning Is Just Beyond Your Reach!</td>
-                <td>2021-03-08</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=d3ODOhNFGUU">067</a></td>
-                <td>Seize The Moment?</td>
-                <td>Should We Always Rush In? Or Practice Creative Procrastination?</td>
-                <td>2021-03-07</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=x5M1ZTRS3e0">066</a></td>
-                <td>Newton's Help!</td>
-                <td>Can Newton's Laws Help Us Act Without Delay?</td>
-                <td>2021-03-06</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=5__Bi82jfyc">065</a></td>
-                <td>Arjuna's Arrow!</td>
-                <td>More Reasons Why Arjuna's Arrow Flew True!</td>
-                <td>2021-03-05</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=nxsfSLIC16o">064</a></td>
-                <td>Arjuna! Arjuna!!</td>
-                <td>Arjuna! Arjuna! Teach Us What They Taught You About Focus!</td>
-                <td>2021-03-04</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=0IM06vGrteE">063</a></td>
-                <td>Retire Often!</td>
-                <td>Some Multiple Premature Retirement Advice!</td>
-                <td>2021-03-03</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=OyFxXt1dgew">062</a></td>
-                <td>Four Circles!</td>
-                <td>Four Intersecting Circles! Passion! Profession! Vocation! Mission! Where Do You Stand?</td>
-                <td>2021-03-02</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=uYtR7yVJ1ng">061</a></td>
-                <td>Which Isaac?</td>
-                <td>Are You Attempting The Impossible? Or, Just The Very Hard?</td>
-                <td>2021-03-01</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=BRMnSMrH-K4">060</a></td>
-                <td>Q and A for 051 to 059</td>
-                <td>You had many questions. I, hopefully, have some answers!</td>
-                <td>2021-02-28</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=rIa3kagmCGI">059</a></td>
-                <td>Lizard Brain Speaks!</td>
-                <td>The Real Reason Why I Didn�t Start �Quotidians� In 2015 Itself!</td>
-                <td>2021-02-27</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=e_BkzYx-B8s">058</a></td>
-                <td>Think Different!</td>
-                <td>Antidote To Algorithm Slavery - Think Different!</td>
-                <td>2021-02-26</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=6ss-5fm4RNU">057</a></td>
-                <td>Future Tense!</td>
-                <td>About This Future... Why Am I Tense?</td>
-                <td>2021-02-25</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=Vq_Kb2kpaCI">056</a></td>
-                <td>Running Races!</td>
-                <td>Life Is A Race, They Say! Run The Right One!!</td>
-                <td>2021-02-24</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=l1Zvrlw3nCE">055</a></td>
-                <td>The Learner Mindset!</td>
-                <td>Two Things Sachin Teaches Us To Keep In Mind As We Covet Expertise In A New Skill! </td>
-                <td>2021-02-23</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=XnUK6colGg4">054</a></td>
-                <td>Focus On Strengths!</td>
-                <td>Strengthening Your Weakness May Weaken Your Strengths! Watch Out!</td>
-                <td>2021-02-22</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=VStrvxwHKwc">053</a></td>
-                <td>Beautifully Buggy?</td>
-                <td>Can Something Imperfect Be Beautiful Still?</td>
-                <td>2021-02-21</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=6xn2rUtkGCI">052</a></td>
-                <td>Four Failures</td>
-                <td>All Of Us Fail. Some Day Some Time. Question Is, Do We Know The Type Of Failure We Had?</td>
-                <td>2021-02-20</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=k1WuVNQ3_VU">051</a></td>
-                <td>Late Delivery</td>
-                <td>Sorry for the late delivery! (I really mean it, I mean!)</td>
-                <td>2021-02-19</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=cZpP8SjCzXU">049</a></td>
-                <td>Why Do We Buy?</td>
-                <td>Why Do We Buy? What Can It Teach Us About Product Innovation?</td>
-                <td>2021-02-17</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=mXYwt8FgUbI">048</a></td>
-                <td>The Learning Bowl</td>
-                <td>What Is The Learning Bowl, and What Do You Fill It With? Some Thoughts!</td>
-                <td>2021-02-16</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=fTY7ejq7MN0">047</a></td>
-                <td>Breadth Or Depth?</td>
-                <td>Breadth Or Depth? Two Sides Of The Same Coin! One to Broaden Scope, Another To Narrow It!</td>
-                <td>2021-02-15</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=M55epZrE9s0">046</a></td>
-                <td>The Novice!</td>
-                <td>How Does A Novice Become An Expert? With A Whiplash!</td>
-                <td>2021-02-14</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=tEKj-0Rloz4">045</a></td>
-                <td>Steal Well!</td>
-                <td>The Fine Art Of Stealing Well!</td>
-                <td>2021-02-13</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=NW-CsC1GxW8">044</a></td>
-                <td>Micromanagement</td>
-                <td>The Future Of Work Has A Taboo Word In Its Dictionary - And It Is Too Small To Notice Before It Is Too Late!</td>
-                <td>2021-02-12</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=Rno54STeHxU">043</a></td>
-                <td>The Last Answer!</td>
-                <td>The Single Most Important Purpose You Should Have Is To Find Your Purpose!</td>
-                <td>2021-02-11</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=TiFr59DpfkU">042</a></td>
-                <td>The Last Question!</td>
-                <td>Two Stories About One Question!</td>
-                <td>2021-02-10</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=ZgoznZPU8VY">041</a></td>
-                <td>The Power Of Words!</td>
-                <td>Words Have Amazing Power! Use Them With Care!</td>
-                <td>2021-02-09</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=LWtn1Ugiwqc">040</a></td>
-                <td>Q and A for 031 to 039</td>
-                <td>You had many questions. I, hopefully, have some answers!</td>
-                <td>2021-02-08</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=ohAQdQ791d8">039</a></td>
-                <td>Chasm Crossing!</td>
-                <td>Crossing The Chasm Is Important for ALL Fish!</td>
-                <td>2021-02-07</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=vcarJKOr5HA">038</a></td>
-                <td>The Ladder's Steps!</td>
-                <td>The Ladder's Steps - Lessons One Can Learn From This Simple Object!</td>
-                <td>2021-02-06</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=MlKYjbYq9Ow">037</a></td>
-                <td>Best (?) Wishes!</td>
-                <td>How Do You Convey Your Best Wishes?</td>
-                <td>2021-02-05</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=g8H5PO03rKc">036</a></td>
-                <td>Gone in 60 Seconds!</td>
-                <td>The Special Beauty Of Things That Are Here Today Gone Tomorrow!</td>
-                <td>2021-02-04</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=PQ8o03jaG4c">035</a></td>
-                <td>This Too Shall...</td>
-                <td>This too shall pass, and the new shall replace the old. Embrace change!</td>
-                <td>2021-02-03</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=OkwhNSFohBw">034</a></td>
-                <td>800 Lifetimes!</td>
-                <td>800 Lifetimes. Will you make yours count?</td>
-                <td>2021-02-02</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=5qB2_bcjkLk">033</a></td>
-                <td>Distracted Minds!</td>
-                <td>A key reason why we aren't as creative as we can be! (Rrrrring!)</td>
-                <td>2021-02-01</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=QH5LYYjDgyc">032</a></td>
-                <td>Look, Don't See!</td>
-                <td>To observe without influencing. Is it even possible?</td>
-                <td>2021-01-31</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=rIv2msdC0GM">031</a></td>
-                <td>Why Ask Why?</td>
-                <td>Why Ask Why? Four More Times?</td>
-                <td>2021-01-30</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=ZttFss21q5Q">030</a></td>
-                <td>Q and A for 021 to 029</td>
-                <td>You had many questions. I, hopefully, have some answers!</td>
-                <td>2021-01-29</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=QGB_0JnlKfs">029</a></td>
-                <td>The Man In The Arena!</td>
-                <td>The Man in the Arena, even if failing, is far superior to...</td>
-                <td>2021-01-28</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=BqFrJZZZTsk">028</a></td>
-                <td>Scratch an Itch!</td>
-                <td>Want To Achieve Something Great? Scratch A Personal Itch!</td>
-                <td>2021-01-27</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=VrPOfVqvZ_Q">027</a></td>
-                <td>An Achiever!</td>
-                <td>What do achievers aspire to do, actually?</td>
-                <td>2021-01-26</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=zd1Y1iKiFDg">026</a></td>
-                <td>Plan for Slack</td>
-                <td>Plan For Slack, You May Have To Pause, Step Back, Before Shooting Forward!</td>
-                <td>2021-01-25</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=FRTxgmr4TKQ">025</a></td>
-                <td>A Thousand Sparks</td>
-                <td>A Pointed Feedback and a Passionate Defence. Please Understand, Pal!</td>
-                <td>2021-01-24</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=hfcncSnHKis">024</a></td>
-                <td>Leave Silver, Grab Gold!</td>
-                <td>Leave Silver, Grab Gold! Plan Better, Win More!</td>
-                <td>2021-01-23</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=iKghLFLaoF4">023</a></td>
-                <td>The Opposite of Love</td>
-                <td>The Opposite of Love is not Hate! Watch and Learn! (Don't be Indifferent!)</td>
-                <td>2021-01-22</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=OhJAy0sOA0w">022</a></td>
-                <td>The Long Tail</td>
-                <td>The Long Tail and its Implications</td>
-                <td>2021-01-21</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=GyzGSh7x6iA">021</a></td>
-                <td>In Between!</td>
-                <td>Look in between, for unexplored ideas!</td>
-                <td>2021-01-20</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=1YeEhKZ2Bas">020</a></td>
-                <td>Q and A for 011 to 019</td>
-                <td>You had many questions. I, hopefully, have some answers!</td>
-                <td>2021-01-19</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=z5m3ewyI33s">019</a></td>
-                <td>Learn Sideways!</td>
-                <td>Learning sideways at a time when ubiquity has replaced novelty!</td>
-                <td>2021-01-18</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=7nswfaKUHBw">018</a></td>
-                <td>The Circle of Knowledge</td>
-                <td>Exploring The Limits Of Knowledge...Thoughts from a professor, a Goddess, a colleague!</td>
-                <td>2021-01-17</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=x5ZJk8pnah8">017</a></td>
-                <td>Three Ways To Win!</td>
-                <td>There are probably just three "surefire" ways to win in life!</td>
-                <td>2021-01-16</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=-hQbAIfovtQ">016</a></td>
-                <td>Trust Is Key!</td>
-                <td>A multi-dimensional view on matters of trust.</td>
-                <td>2021-01-15</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=exQQV5sMkWw">015</a></td>
-                <td>The Robots Are Coming!</td>
-                <td>The Robot Revolution is here. Are we ready to face it?</td>
-                <td>2021-01-14</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=rBScvcx_Xnk">014</a></td>
-                <td>Balance The Ottoman!</td>
-                <td>This ottoman has three legs. All three are vital for stability.</td>
-                <td>2021-01-13</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=Zqv4lKaBHKE">013</a></td>
-                <td>12 + 1 = 13!</td>
-                <td>The Baker's Dozen is what we need today, the icing IS the cake!</td>
-                <td>2021-01-12</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=bfNqTg5C1qQ">012</a></td>
-                <td>Where The Puck?</td>
-                <td>Choose the right skill to learn, when you have limited time and money to invest in the effort.</td>
-                <td>2021-01-11</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=KoBjonDInc0">011</a></td>
-                <td>Wear Are We Going?</td>
-                <td>What you say is MUCH MUCH MORE important than what you wear!</td>
-                <td>2021-01-10</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=pYDB_AOATR8">010</a></td>
-                <td>Q and A for 001 to 009</td>
-                <td>You had many questions. I, hopefully, have some answers!</td>
-                <td>2021-01-09</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=RRRhhLz5uqc">009</a></td>
-                <td>Six Honest Serving Men!</td>
-                <td>How does an inquisitive child become an average adult?</td>
-                <td>2021-01-08</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=uB7PnBRMHoM">008</a></td>
-                <td>Another Kinda Gorilla!</td>
-                <td>The best way to escape being laughed at!</td>
-                <td>2021-01-07</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=y0ERXQScviY">007</a></td>
-                <td>Pay Attention!</td>
-                <td>There are three ways to get distracted. The last is the worst!</td>
-                <td>2021-01-06</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=9ADacc4x79A">006</a></td>
-                <td>Overcoming Stagefright!</td>
-                <td>Overcoming Stagefright!</td>
-                <td>2021-01-05</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=1LK5vhqXfQM">005</a></td>
-                <td>Strange Coincidences!</td>
-                <td>Differences ignored.. Similarities overemphasised.. Beware of this trigger-happy cowboy!</td>
-                <td>2021-01-04</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=Xtn_khIeXUo">004</a></td>
-                <td>Meaningful Metrics!</td>
-                <td>Goodhart's Law and the horror of measuring the wrong things.</td>
-                <td>2021-01-03</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=Car9hV4gaN4">003</a></td>
-                <td>Listening to Customers!</td>
-                <td>What is the preferred strategy when dealing with irate customers? The elephant has an interesting answer for you!</td>
-                <td>2021-01-02</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=y2xjBJVzgME">002</a></td>
-                <td>Something to live for!</td>
-                <td>Today's video is about "The Two Towers" movie, the second in The Lord Of The Rings - Trilogy.</td>
-                <td>2021-01-01</td>
-            </tr>
-            <tr>
-                <td><a href="https://www.youtube.com/watch?v=YLbypZjHgSA">001</a></td>
-                <td>Introduction!</td>
-                <td>Welcome to Quotidian - a humble attempt to bring a smile to your face... Every day of 2021! (Wish me luck!)</td>
-                <td>2020-12-31</td>
-            </tr>
-        </tbody>
-    </table>
+        </div>
+    </div>
+</section>
+<div class="container mx-auto lg:w-3/5 px-4 pt-8 mb-4">
+    © <a href="https://www.youtube.com/c/rajendrandandapani">Rajendran Dandapani</a> 2021 | All rights reserved
 </div>
 
-</body>
 
+</body>
 </html>
